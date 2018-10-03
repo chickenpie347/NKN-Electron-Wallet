@@ -1,0 +1,16 @@
+<template class="section-template">
+<section id="overview" class="wrapper style4 fullscreen intro">
+  <div class="inner">
+    <h1>Overview</h1>
+    <h3>Balance</h3>
+    <span id="nkn_balance" style="font-size:50px;"></span><span style="font-size:12px;">NKN</span><br>
+
+    <ul class="actions">
+      <button type="button" class="button" onclick="getbalance()">Refresh Balance</button>
+    </ul>
+    <span id="loadaddr" style="font-size:24px;"></span><div class="popup" >
+  <span class="popuptext" id="myPopup">Copied!</span><button type="button" class="copybtn btn-light hide" id="copybtn" onclick="copyToClipboard('#loadaddr')"><i class="fa fa-copy"></i>
+</div></button>
+  </div>
+</section>
+</template>

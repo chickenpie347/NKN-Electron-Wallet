@@ -1,0 +1,26 @@
+<template class="section-template">
+	<section id="backup" class="wrapper style4">
+		<div class="inner">
+			<h1>Backup</h1>
+			<button onclick="backup()">Download Wallet File</button>
+			<br><hr>
+			<h1>Restore</h1>
+			<p>WARNING: This will overwrite your current wallet and make it unrecoverable. Make sure you have backed up the current wallet. Proceed with extreme caution.</p>
+			<form id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
+				<fieldset>
+					<label for="fileinput" class="btn btn-secondary custom-file-upload">
+						<i class="fa fa-wallet"></i> Select Wallet File
+					</label><br>
+					<input id="fileinput" type="file"/>
+					<div class="form-group">
+						<input type='password' class="form-control half" style="border-color: #182962 !important;color:#182962 !important;" name='pass' placeholder="Enter Password" id='pass'>
+					</div><br>
+					<ul class="actions">
+						<li><input class="button scrolly" type='button' id='btnLoad' value='Unlock' onclick='loadFile()'> </li>
+						<li><a data-section="welcome" href="#" id='back1' class="button scrolly">Back</a></li>
+					</ul>
+				</fieldset>
+			</form>
+		</div>
+	</section>
+</template>

@@ -1,0 +1,27 @@
+<template class="section-template">
+<section id="transfer" class="wrapper style4 spotlights">
+  <section>
+    <div class="content">
+      <div class="inner">
+        <h2>Transfer</h2>
+        <p>Enter Wallet address...</p>
+        <div class="fields">
+                      <div class="field half">
+                        <label for="toaddr">To</label>
+                        <input type="text" name="toaddr" id="toaddr">
+                      </div>
+                      <div class="field half">
+                        <label for="amt">Amount</label>
+                        <input type="number" style="color:#242729 !important; border-color:#182962 !important;" name="amt" id="amt">
+                      </div>
+                    </div>
+        <br>
+        <ul class="actions">
+          <li><a onclick="transfer()" class="button">Transfer</a></li>
+        </ul>
+        <span id="txalert"></span>
+      </div>
+    </div>
+  </section>
+</section>
+</template>

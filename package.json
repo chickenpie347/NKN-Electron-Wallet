@@ -1,0 +1,34 @@
+{
+  "name": "nkn-wallet-app",
+  "productName": "NKN Wallet",
+  "description": "NKN Wallet App",
+  "version": "0.1.0",
+  "main": "main.js",
+  "license": "MIT",
+  "author": "SF",
+  "devDependencies": {
+    "electron": "^3.0.2",
+    "electron-installer-dmg": "^0.1.2",
+    "electron-packager": "^12.2.0",
+    "electron-winstaller": "^2.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crilleengvall/electron-tutorial-app.git"
+  },
+  "scripts": {
+    "package-mac": "electron-packager . --overwrite --asar=true --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . nkn-wallet-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=SF --version-string.FileDescription=SF --version-string.ProductName=\"NKN Wallet\"",
+    "package-linux": "electron-packager . nkn-wallet-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/512x512.png --prune=true --out=release-builds",
+    "create-installer-mac": "electron-installer-dmg ./release-builds/NKN\\ Wallet\\ App-darwin-x64/NKN\\ Wallet\\ app.app nkn-wallet-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
+    "create-installer-win": "node installers/windows/createinstaller.js",
+    "create-debian-installer": "electron-installer-debian --src release-builds/nkn-wallet-app-linux-x64/ --arch amd64 --config debian.json",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "elliptic": "^6.4.1",
+    "jquery": "^3.3.1",
+    "nkn-wallet": "^0.1.4",
+    "popper.js": "^1.14.4"
+  }
+}

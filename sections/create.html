@@ -1,0 +1,21 @@
+<template class="section-template">
+	<section id="create" class="wrapper style2 intro fullscreen">
+		<div class="inner">
+			<h2>Create a new wallet</h2>
+			<div class="form-group"><br>
+				<input type='password' class="form-control half" name='cpass' placeholder="Choose Password" id='cpass'>
+			</div>
+			<p>NOTE: You will lose access to your wallet if you misplace the wallet file or forget your password.</p>
+			
+			<h3 id="newaddr"><button type="button" style="display: none; border:none !important;" class="copybtn btn-light hide" id="copybtn" data-container="body" data-toggle="popover" data-placement="right" data-content="Copied!" onclick="copyToClipboard('#genaddr')">
+				<i class="fa fa-copy"></i>
+			</button></h3>   
+			<ul class="actions">
+				<li><button type="button" class="btn btn-success" id="createbutton" onclick="createnew()">Create Wallet</button></li>
+				<li><a data-section="welcome" href="#" id="back" class="button scrolly">Back</a></li>
+			</ul>   
+		</div>
+
+	</div>
+</section>
+</template>

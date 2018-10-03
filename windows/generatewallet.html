@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+	<title>NKN Wallet</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="../assets/css/main.css" />
+	<link rel="import" href="../sections/welcome.html">
+	<link rel="import" href="../sections/create.html">
+	<link rel="import" href="../sections/load.html">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+	<style>
+	::-webkit-scrollbar { display: none; }
+	.custom-file-upload {
+		display: inline-block;
+		padding: 6px 12px;
+		cursor: pointer;
+	}
+	input[type="file"] {
+		display: none;
+	}
+</style>
+</head>
+<body>
+
+	<!-- Sidebar -->
+	<section id="sidebar">
+		<div class="inner">
+			<nav>
+				<ul>
+							<!--<li><a id="welcome-menu" data-section="welcome" href="#">Welcome</a></li>
+							<li><a id="create-menu" data-section="create" href="#">Create</a></li>
+							<li><a id="load-menu" data-section="load" href="#">Import</a></li>-->
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+			<!-- Wrapper -->
+			<div id="wrapper">
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner genfooter">
+					<ul class="menu">
+					</ul>
+				</div>
+			</footer>
+
+			<!-- Scripts -->
+			<script>window.$ = window.jQuery = require('../assets/js/jquery.min.js');</script>
+			<script>window.i18n = new(require('../translations/i18n'));</script>
+			<script type="text/javascript">
+				const electron = require('electron');
+				const remote = require('electron').remote;
+				var window = remote.getCurrentWindow();
+				const path = require('path');
+				const fs = require('fs');
+				const userDataPath = (electron.app || electron.remote.app).getPath('userData');
+
+				var walletJson="";
+				function createnew(){
+					var p = document.getElementById('cpass').value;
+					const wallet = nknWallet.newWallet(p);
+					walletJson = wallet.toJSON();
+					download('wallet.dat', walletJson);
+					console.log(wallet.address);
+					$('#newaddr').replaceWith("<span style='font-size:12;' id='newaddr'>Your wallet has been successfully generated! Your new NKN address is: <br>"+ wallet.address + "</span>");
+					$('#createbutton').replaceWith("<button type='button' class='btn btn-success' onclick=\"download('wallet.dat', walletJson)\">Download</button>");
+					$('#back').replaceWith("<button type='button' class='btn btn-success' onclick=\"gotomain()\">Next</button>");
+
+
+					fs.writeFile(userDataPath+'/wallet.dat', walletJson, function(err, result) {
+						if(err) console.log('error', err);
+						if(result) console.log(result);
+					});
+				}
+
+				function loadFile() {
+					var input, file, fr;
+					var p = document.getElementById('pass').value;
+
+					if (typeof window.FileReader !== 'function') {
+						alert("The file API isn't supported on this browser yet.");
+						return;
+					}
+
+					input = document.getElementById('fileinput');
+					if (!input) {
+						alert("Um, couldn't find the fileinput element.");
+					}
+					else if (!input.files) {
+						alert("This browser doesn't seem to support the `files` property of file inputs.");
+					}
+					else if (!input.files[0]) {
+						alert("Please select a file before clicking 'Load'");
+					}
+					else {
+						file = input.files[0];
+						fr = new FileReader();
+						fr.onload = receivedText;
+						fr.readAsText(file);
+					}
+
+					function receivedText(e) {
+						let lines = e.target.result;
+						walletFromJson = nknWallet.loadJsonWallet(lines, p);
+						if(walletFromJson.address){
+							var fixed = walletFromJson.toJSON();
+							$('#btnLoad').replaceWith("<button type='button' disabled class='btn btn-success'>Loaded</button>");
+							$('#back1').replaceWith("<button type='button' class='btn btn-success' onclick='gotomain()'>Next</button>");
+						}
+						console.log(walletFromJson);
+						fs.writeFile(userDataPath+'/wallet.dat', fixed, function(err, result) {
+							if(err) console.log('error', err);
+						});
+					}
+				}
+
+				function copyToClipboard(element) {
+					var $temp = $("<input>");
+					$("body").append($temp);
+					$temp.val($(element).text()).select();
+					document.execCommand("copy");
+					$temp.remove();
+				}
+
+
+				function download(filename, text) {
+					var element = document.createElement('a');
+					element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+					element.setAttribute('download', filename);
+					element.style.display = 'none';
+					document.body.appendChild(element);
+					element.click();
+					document.body.removeChild(element);
+				}
+
+				function gotomain(){
+					window.close();
+				}
+
+
+			</script>
+
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/skel.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+			<script>
+				require('../assets/js/menu_alt')
+				require('../assets/js/translations');
+				require('../assets/js/ipc');
+				const nknWallet = require('nkn-wallet');
+			</script>
+		</body>
+		</html>

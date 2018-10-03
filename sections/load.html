@@ -1,0 +1,23 @@
+<template class="section-template">
+	<section id="load" class="wrapper style2 intro fullscreen">
+		<div class="inner">
+			<h2>Import an existing wallet</h2>
+			<p></p>
+			<form id="jsonFile" name="jsonFile" enctype="multipart/form-data" method="post">
+				<fieldset>
+					<label for="fileinput" class="btn btn-secondary custom-file-upload">
+						<i class="fa fa-wallet"></i> Select Wallet File
+					</label><br>
+					<input id="fileinput" type="file"/>
+					<div class="form-group">
+						<input type='password' class="form-control half" name='pass' placeholder="Enter Password" id='pass'>
+					</div><br>
+					<ul class="actions">
+				<li><input class="button scrolly" type='button' id='btnLoad' value='Unlock' onclick='loadFile()'> </li>
+			<li><a data-section="welcome" href="#" id='back1' class="button scrolly">Back</a></li>
+		</ul>
+				</fieldset>
+			</form>
+		</div>
+	</section>
+</template>

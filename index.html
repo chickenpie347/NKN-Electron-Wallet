@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+	<title>NKN Wallet</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<link rel="import" href="sections/backup.html">
+	<link rel="import" href="sections/overview.html">
+	<!--<link rel="import" href="sections/import.html">-->
+	<link rel="import" href="sections/transfer.html">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+	<style>
+	#overlay {
+		position: fixed; /* Sit on top of the page content */
+		display: none; /* Hidden by default */
+		width: 100%; /* Full width (cover the whole page) */
+		height: 100%; /* Full height (cover the whole page) */
+		top: 0; 
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0,0.7); /* Black background with opacity */
+		z-index: 10; /* Specify a stack order in case you're using a different order for other elements */
+		/*cursor: pointer; /* Add a pointer on hover */
+	}
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"],
+	input[type="text"],
+	button,
+	.button {
+		color:#242729 !important;
+		border-color: #182962 !important;
+		height: calc(2.75em + 2px);
+		line-height: 2.75em;
+		font-size:0.8em;
+	}
+	.copybtn{
+		border:none !important;
+		height:1em ;
+		line-height:1em;
+		font-size: 1.5em;
+		margin-left:-85px;
+	}
+
+	.popup {
+		position: relative;
+		display: inline-block;
+		cursor: pointer;
+	}
+
+	/* The actual popup (appears on top) */
+	.popup .popuptext {
+		visibility: hidden;
+		width: 160px;
+		background-color: #555;
+		color: #fff;
+		text-align: center;
+		border-radius: 6px;
+		padding: 8px 0;
+		position: absolute;
+		z-index: 1;
+		bottom: 125%;
+		left: 50%;
+		margin-left: -125px;
+	}
+
+	/* Popup arrow */
+	.popup .popuptext::after {
+		content: "";
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		margin-left: -5px;
+		border-width: 5px;
+		border-style: solid;
+		border-color: #555 transparent transparent transparent;
+	}
+
+	/* Toggle this class when clicking on the popup container (hide and show the popup) */
+	.popup .show {
+		visibility: visible;
+		-webkit-animation: fadeIn 1s;
+		animation: fadeIn 1s
+	}
+
+	/* Add animation (fade in the popup) */
+	@-webkit-keyframes fadeIn {
+		from {opacity: 0;} 
+		to {opacity: 1;}
+	}
+
+	@keyframes fadeIn {
+		from {opacity: 0;}
+		to {opacity:1 ;}
+	}
+	::-webkit-scrollbar { display: none; }
+	.custom-file-upload {
+		display: inline-block;
+		padding: 6px 12px;
+		cursor: pointer;
+	}
+	input[type="file"] {
+		display: none;
+	}
+</style>
+</head>
+<body>
+	<div id="overlay" style="padding-top:250px;"><center><span class="password" ><i class="fa fa-lock" style="font-size:100px;"></i><br>ENTER YOUR PASSWORD<br><input type="password" style="width:150px;" id="password"><br><button onclick="unlock()">Unlock</button><span id="alert" style="display: none;">Incorrect Password!</span></span></center></div>
+	<!-- Sidebar -->
+	<section id="sidebar">
+		<img src="assets/img/nknwhite.png" width="220px">
+		<h2 style="line-height: 0.9em !important;">Wallet<br/>v0.1</h2>
+		<div class="inner">
+			<nav>
+				<ul>
+					<li><a id="overview-menu" data-section="overview" href="#">Overview</a></li>
+					<li><a id="transfer-menu" data-section="transfer" href="#">Transfer</a></li>
+					<!--<li><a id="import-menu" data-section="import" href="#">Import Wallet</a></li>-->
+					<li><a id="backup-menu" data-section="backup" href="#">Backup/Restore</a></li>
+				</ul>
+			</nav>
+		</div>
+	</section>
+	<!--overlay for password-->
+	
+	<!-- Wrapper -->
+	<div id="wrapper">
+	</div>
+
+	<!-- Footer -->
+	<footer id="footer" class="wrapper style1-alt">
+		<div class="inner">
+			<ul class="menu">
+				<li>Free the bits, rebuild the internet we always wanted.</li>
+			</ul>
+		</div>
+	</footer>
+
+	<!-- Scripts -->
+	<script>window.$ = window.jQuery = require('./assets/js/jquery.min.js');</script>
+	<script type="text/javascript">
+		document.getElementById("overlay").style.display = "block";
+		const electron = require('electron');
+		const nknWallet = require('nkn-wallet');
+		const path = require('path');
+		const fs = require('fs');
+		const userDataPath = (electron.app || electron.remote.app).getPath('userData');
+		nknWallet.configure({
+			rpcAddr: 'http://138.197.147.97:30003',
+		});
+		var p = "";
+
+		function unlock() {
+			p = document.getElementById('password').value;
+			fs.readFile(userDataPath+'/wallet.dat', function read(err, data) {
+				if (err) {
+					throw err;
+				}
+				walletFromJson = nknWallet.loadJsonWallet(data, p);
+				if(walletFromJson.address){
+					document.getElementById("overlay").style.display = "none";
+					getbalance();
+				}
+				else{
+					document.getElementById("alert").style.display = "block";
+				}
+				console.log(walletFromJson);
+			});
+		}
+		function getbalance(){
+			walletFromJson.queryAssetBalance().then(function(value) {
+				console.log('asset balance for this wallet is: ', value.toString());
+				document.getElementById("nkn_balance").innerHTML =  value.toString();
+				document.getElementById("loadaddr").innerHTML =  walletFromJson.address;
+				var z = document.getElementById("loadaddr");
+				z.style.display = "inline-block";
+			}).catch(function(error) {
+				console.log('query balance fail: ', error)
+			});
+		}
+
+		function transfer(){
+			var ad = document.getElementById('toaddr').value;
+			var amt = document.getElementById('amt').value;
+			walletFromJson.transferTo(ad, amt, p).then(function(data) {
+				console.log('success: ', data);
+				document.getElementById("txalert").innerHTML+="Success! Tx Hash: "+data;
+			}).catch(function(error) {
+				console.log('fail: ', error);
+				document.getElementById("txalert").innerHTML+= "Failed "+JSON.stringify(error);
+			});
+			getbalance();
+		}
+		function copyToClipboard(element) {
+			var $temp = $("<input>");
+			$("body").append($temp);
+			$temp.val($(element).text()).select();
+			document.execCommand("copy");
+			$temp.remove();
+			var popup = document.getElementById("myPopup");
+			popup.classList.toggle("show");
+		}
+
+		function download(filename, text) {
+			var element = document.createElement('a');
+			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			element.setAttribute('download', filename);
+			element.style.display = 'none';
+			document.body.appendChild(element);
+			element.click();
+			document.body.removeChild(element);
+		}
+
+		function backup(){
+			var fixed = walletFromJson.toJSON();
+			download('wallet.dat', fixed);
+		}
+
+		function loadFile() {
+			var input, file, fr;
+			var p = document.getElementById('pass').value;
+
+			if (typeof window.FileReader !== 'function') {
+				alert("The file API isn't supported on this browser yet.");
+				return;
+			}
+
+			input = document.getElementById('fileinput');
+			if (!input) {
+				alert("Um, couldn't find the fileinput element.");
+			}
+			else if (!input.files) {
+				alert("This browser doesn't seem to support the `files` property of file inputs.");
+			}
+			else if (!input.files[0]) {
+				alert("Please select a file before clicking 'Load'");
+			}
+			else {
+				file = input.files[0];
+				fr = new FileReader();
+				fr.onload = receivedText;
+				fr.readAsText(file);
+			}
+
+			function receivedText(e) {
+				let lines = e.target.result;
+				walletFromJson = nknWallet.loadJsonWallet(lines, p);
+				if(walletFromJson.address){
+					var fixed = walletFromJson.toJSON();
+					$('#btnLoad').replaceWith("<button type='button' disabled class='btn btn-success'>Loaded</button>");
+					$('#back1').replaceWith("<button type='button' class='btn btn-success' onclick='gotomain()'>Next</button>");
+				}
+				console.log(walletFromJson);
+				fs.writeFile(userDataPath+'/wallet.dat', fixed, function(err, result) {
+					if(err) console.log('error', err);
+				});
+			}
+		}
+	</script>
+	<script>window.i18n = new(require('./translations/i18n'));</script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/skel.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+	<script>
+		require('./assets/js/menu');
+		require('./assets/js/translations');
+		require('./assets/js/ipc');
+	</script>
+</body>
+</html>
