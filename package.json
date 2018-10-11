@@ -23,7 +23,8 @@
     "create-installer-mac": "electron-installer-dmg ./release-builds/NKN\\ Wallet\\ App-darwin-x64/NKN\\ Wallet\\ app.app nkn-wallet-app --out=release-builds --overwrite --icon=assets/icons/mac/icon.icns",
     "create-installer-win": "node installers/windows/createinstaller.js",
     "create-debian-installer": "electron-installer-debian --src release-builds/nkn-wallet-app-linux-x64/ --arch amd64 --config debian.json",
-    "start": "electron ."
+    "start": "electron .",
+    "test": "electron ."
   },
   "dependencies": {
     "elliptic": "^6.4.1",
